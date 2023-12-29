@@ -16,3 +16,5 @@ jobs:
         run: echo "My base_url is ${{vars.VITE_REMOTE_API}}"
       - name: Vue App to Github Pages
         uses: dencee/VuePagesAction@v1.0.0
+        env:
+          VITE_REMOTE_API: ${{vars.VITE_REMOTE_API}}
