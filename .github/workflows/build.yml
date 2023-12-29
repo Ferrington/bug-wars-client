@@ -12,5 +12,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Print name
+        run: echo "My base_url is ${{env.VITE_REMOTE_API}}"
       - name: Vue App to Github Pages
         uses: dencee/VuePagesAction@v1.0.0
