@@ -11,7 +11,7 @@ import router from '@/router';
 import { configureQuill } from './config/quill';
 import PrimeVue from 'primevue/config';
 
-console.log(import.meta.env.BASE_URL);
+console.log(import.meta);
 
 const app = createApp(App);
 
