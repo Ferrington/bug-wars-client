@@ -12,6 +12,7 @@ import { configureQuill } from './config/quill';
 import PrimeVue from 'primevue/config';
 
 console.log(import.meta);
+console.log(import.meta.env);
 
 const app = createApp(App);
 
