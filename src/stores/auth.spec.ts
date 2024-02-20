@@ -1,6 +1,7 @@
-import type { RetryAxiosRequestConfig } from '@/axios';
+import type { RetryAxiosRequestConfig } from '@/config/axios';
 import { authService } from '@/services/authService';
 import type { LoginDto, User } from '@/types';
+import type { ErrorResponse, SuccessResponse } from '@/utils/makeRequest';
 import { flushPromises } from '@vue/test-utils';
 import axios, { AxiosError, type AxiosResponse } from 'axios';
 import { createPinia, setActivePinia, storeToRefs } from 'pinia';
@@ -44,12 +45,18 @@ describe('Auth Store', () => {
       roles: ['ROLE_USER'],
     };
 
-    const mockResponse: AxiosResponse<any, any> = {
-      data: mockUser,
+    // const mockResponse: AxiosResponse<any, any> = {
+    //   data: mockUser,
+    //   status: 200,
+    //   statusText: 'OK',
+    //   headers: {},
+    //   config: {} as any,
+    // };
+
+    const mockResponse: SuccessResponse = {
       status: 200,
-      statusText: 'OK',
-      headers: {},
-      config: {} as any,
+      type: 'success',
+      data: mockUser,
     };
 
     const { login } = useAuthStore();
@@ -64,27 +71,33 @@ describe('Auth Store', () => {
     expect(JSON.parse(localStorage.getItem('user') ?? '{}')).toStrictEqual(mockUser);
   });
 
-  it('should handle errors: 400 response status', async () => {
+  it('should handle errors', async () => {
     const loginDto: LoginDto = {
       username: 'some_user',
       password: 'some_password',
     };
 
-    const mockResponse: AxiosResponse<any, any> = {
-      status: 400,
-      data: undefined,
-      statusText: '',
-      headers: {},
-      config: {} as any,
-    };
+    // const mockResponse: AxiosResponse<any, any> = {
+    //   status: 400,
+    //   data: undefined,
+    //   statusText: '',
+    //   headers: {},
+    //   config: {} as any,
+    // };
 
-    const error = new AxiosError();
-    error.response = mockResponse;
+    // const error = new AxiosError();
+    // error.response = mockResponse;
+
+    const mockResponse: ErrorResponse = {
+      status: 400,
+      type: 'error',
+      error: 'Username and Password cannot be blank.',
+    };
 
     const { login } = useAuthStore();
     const { user, authError } = storeToRefs(useAuthStore());
 
-    vi.mocked(authService.login).mockRejectedValue(error);
+    vi.mocked(authService.login).mockResolvedValue(mockResponse);
 
     await login(loginDto);
 
@@ -92,82 +105,6 @@ describe('Auth Store', () => {
     expect(user.value).toStrictEqual(emptyUser);
     expect(JSON.parse(localStorage.getItem('user') ?? '{}')).toStrictEqual({});
     expect(authError.value).toBe('Username and Password cannot be blank.');
-  });
-
-  it('should handle errors: 401 response status', async () => {
-    const loginDto: LoginDto = {
-      username: 'some_user',
-      password: 'some_password',
-    };
-
-    const mockResponse: AxiosResponse<any, any> = {
-      status: 401,
-      data: undefined,
-      statusText: '',
-      headers: {},
-      config: {} as any,
-    };
-
-    const error = new AxiosError();
-    error.response = mockResponse;
-
-    const { login } = useAuthStore();
-    const { user, authError } = storeToRefs(useAuthStore());
-
-    vi.mocked(authService.login).mockRejectedValue(error);
-
-    await login(loginDto);
-
-    expect(authService.login).toHaveBeenCalledOnce();
-    expect(user.value).toStrictEqual(emptyUser);
-    expect(JSON.parse(localStorage.getItem('user') ?? '{}')).toStrictEqual({});
-    expect(authError.value).toBe('Your login attempt failed. Please try again.');
-  });
-
-  it('should handle errors: server errors', async () => {
-    const loginDto: LoginDto = {
-      username: 'some_user',
-      password: 'some_password',
-    };
-
-    const mockResponse: AxiosResponse<any, any> = {
-      status: 500,
-      data: undefined,
-      statusText: '',
-      headers: {},
-      config: {} as any,
-    };
-
-    const error = new AxiosError();
-    error.response = mockResponse;
-
-    const { login } = useAuthStore();
-    const { user, authError } = storeToRefs(useAuthStore());
-
-    vi.mocked(authService.login).mockRejectedValue(error);
-
-    await login(loginDto);
-
-    expect(authService.login).toHaveBeenCalledOnce();
-    expect(user.value).toStrictEqual(emptyUser);
-    expect(JSON.parse(localStorage.getItem('user') ?? '{}')).toStrictEqual({});
-    expect(authError.value).toBe('Something went wrong on our end. Try again later.');
-  });
-
-  it('should handle errors: non-axios errors', async () => {
-    const { login } = useAuthStore();
-    const consoleSpy = vi.spyOn(console, 'error');
-
-    const loginDto: LoginDto = {
-      username: 'some_user',
-      password: 'some_password',
-    };
-
-    vi.mocked(authService.login).mockRejectedValue(new Error("I'm an error!"));
-
-    await login(loginDto);
-
-    expect(consoleSpy).toHaveBeenCalledWith('Non-axios error:', expect.any(Error));
   });
 
   it('should logout a user and redirect to login', async () => {
@@ -206,9 +143,10 @@ describe('Auth Store', () => {
 
     localStorage.setItem('user', JSON.stringify(mockUser));
 
+    const { loadUserFromLocalStorage } = useAuthStore();
     const { user } = storeToRefs(useAuthStore());
 
-    await flushPromises();
+    await loadUserFromLocalStorage();
 
     expect(user.value).toEqual(mockUser);
   });
@@ -230,9 +168,10 @@ describe('Auth Store', () => {
 
     localStorage.setItem('user', JSON.stringify(mockUser));
 
+    const { loadUserFromLocalStorage } = useAuthStore();
     const { user } = storeToRefs(useAuthStore());
 
-    await flushPromises();
+    await loadUserFromLocalStorage();
 
     expect(user.value).toEqual(emptyUser);
   });
@@ -250,9 +189,10 @@ describe('Auth Store', () => {
 
     localStorage.setItem('user', '{"username": "some_user", "roles": ["ROLE_USER"], }');
 
+    const { loadUserFromLocalStorage } = useAuthStore();
     const { user } = storeToRefs(useAuthStore());
 
-    await flushPromises();
+    await loadUserFromLocalStorage();
 
     expect(user.value).toEqual(emptyUser);
   });
@@ -335,5 +275,25 @@ describe('Auth Store', () => {
     const response = await attemptToRefreshToken(config);
 
     expect(response).toBe('logout successful');
+  });
+
+  it('should handle an error while retrieving user from localstorage', async () => {
+    const mockUser: User = {
+      username: 'some_user',
+      roles: ['ROLE_USER'],
+    };
+
+    const error = new Error();
+
+    const consoleMock = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.mocked(authService.refreshToken).mockRejectedValue(error);
+
+    localStorage.setItem('user', JSON.stringify(mockUser));
+
+    const { loadUserFromLocalStorage } = useAuthStore();
+
+    await loadUserFromLocalStorage();
+
+    expect(consoleMock).toHaveBeenCalledOnce();
   });
 });

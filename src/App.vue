@@ -1,33 +1,57 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router';
+import TopNav from '@/components/base/TopNav.vue';
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink :to="{ name: 'login' }">Login</RouterLink>
-      </nav>
+  <div class="container">
+    <TopNav />
+    <div class="router-view-container">
+      <RouterView />
     </div>
-  </header>
-
-  <RouterView />
+    <footer>
+      <nav class="footer-nav">
+        <RouterLink :to="{ name: 'demo' }">Demo</RouterLink>
+        <RouterLink :to="{ name: 'howToPlay' }">How to Play</RouterLink>
+        <RouterLink :to="{ name: 'credits' }">Credits</RouterLink>
+      </nav>
+    </footer>
+  </div>
 </template>
 
 <style scoped>
-header {
-  max-height: 100vh;
+.container {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  position: absolute;
+  inset: 0;
 }
 
-nav {
-  width: 100%;
-  font-size: 1rem;
-  text-align: center;
+.router-view-container {
+  overflow-y: auto;
+}
+
+.footer-nav {
   display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  background-color: rgba(18, 18, 18, 0.85);
 }
 
-nav a {
+.footer-nav a {
   padding: 0 1rem;
+  text-decoration: none;
+  color: #d1d1d1;
+  text-transform: uppercase;
+}
+
+.footer-nav a:hover {
+  color: rgb(255, 34, 0);
+  transition: ease-in-out 0.2s;
+}
+
+@media (max-width: 768px) {
+  .footer-nav {
+    display: none;
+  }
 }
 </style>

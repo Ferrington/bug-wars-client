@@ -23,7 +23,7 @@ export function configureAxios() {
   axios.interceptors.response.use(
     (response) => response,
     async (error) => {
-      const { attemptToRefreshToken } = useAuthStore();
+      const { attemptToRefreshToken, logout } = useAuthStore();
 
       if (!axios.isAxiosError(error)) {
         console.error('Non-axios error: ', error);
@@ -33,10 +33,14 @@ export function configureAxios() {
       const originalRequest: RetryAxiosRequestConfig | undefined = error.config;
       if (originalRequest == null) return Promise.reject(error);
 
-      if (error.response?.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
+      if (error.response?.status === 401 && error.response.data.path !== '/api/auth/login') {
+        if (originalRequest._retry) {
+          originalRequest._retry = true;
 
-        return await attemptToRefreshToken(originalRequest);
+          return await attemptToRefreshToken(originalRequest);
+        } else {
+          logout(true);
+        }
       }
       return Promise.reject(error);
     },

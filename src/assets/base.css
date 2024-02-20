@@ -1,3 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200;300;400;500;600;700;800&display=swap');
+
+:root {
+  --editor-font-size: 1rem;
+  --editor-line-height: 1.5rem;
+  --editor-font-family: 'Courier New', Courier, monospace;
+
+  --button-red: rgb(114, 16, 0);
+  --button-red-dark: rgb(82, 14, 0);
+  --button-red-light: rgb(137, 18, 0);
+
+  --dark-background: rgb(18, 18, 18);
+  --dark-background-light: rgb(25, 25, 25);
+}
+
+* {
+  font-family: Oxanium, Arial, Helvetica, sans-serif;
+}
+
 body {
   margin: 0;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('@/assets/base/background-2000.jpg');
+  background-image: image-set(
+    '@/assets/base/background-2000.jpg' 0.5x,
+    '@/assets/base/background-2900.jpg' 1x
+  );
+  background-position: 20% 35%;
+  filter: brightness(40%);
+}
+
+.p-inputtext {
+  padding: 6px;
+  background-color: var(--dark-background);
+  color: #fff;
+  border-radius: 2px;
+}
+
+.p-inputtext:hover {
+  border-color: var(--button-red);
+}
+
+.p-inputtext:focus {
+  border-color: var(--button-red);
+  box-shadow: 0 0 0 0.2rem var(--button-red);
+}
+
+.p-inputtext:-webkit-autofill,
+.p-inputtext:-webkit-autofill:hover,
+.p-inputtext:-webkit-autofill:focus,
+.p-inputtext:-webkit-autofill:active {
+  transition:
+    background-color 600000s 0s,
+    color 600000s 0s;
+  /* background-color: rgba(18, 18, 18, .85); */
+}
+
+.p-inputtext[data-autocompleted] {
+  background-color: var(--dark-background);
+}
+
+.p-button {
+  justify-content: center;
+  align-items: center;
+  background: var(--button-red);
+  border-radius: 2px;
+  border-color: white;
+  padding-block: 5px;
+  text-transform: uppercase;
+}
+
+.p-button:hover {
+  filter: brightness(75%);
+  transition: ease-in-out 0.2s;
+}
+
+.p-button:focus {
+  border-color: var(--button-red);
+  border: 1px solid white;
+  box-shadow: none;
+}
+
+.p-button:disabled {
+  filter: brightness(60%);
+}
+
+.p-slider {
+  background: rgb(92, 92, 92);
+  height: 10px;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.p-slider:hover .p-slider-handle {
+  opacity: 1;
+}
+
+.p-slider .p-slider-handle {
+  border: 1px solid #fff;
+  background: var(--button-red);
+  box-shadow: none;
+  opacity: 0;
+  border-radius: 0;
+  transition: unset;
+  transition: opacity 0.2s;
+}
+
+.p-slider .p-slider-handle:hover {
+  background: var(--button-red);
+}
+
+.p-slider .p-slider-handle:focus {
+  box-shadow: none;
+  opacity: 1;
+}
+
+.p-slider .p-slider-range {
+  background: var(--button-red);
+}
+
+.p-dropdown {
+  border-color: var(--button-red);
+  border-radius: 2px;
+  background: none;
+  color: #fff;
+}
+
+.p-dropdown-label {
+  background: var(--dark-background);
+  border-radius: 0;
+}
+
+.p-dropdown :is(.p-dropdown-label, .p-dropdown-trigger) {
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.p-dropdown:hover :is(.p-dropdown-label, .p-dropdown-trigger) {
+  background: var(--dark-background-light);
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.p-dropdown-trigger {
+  background: var(--dark-background);
+  border-radius: 0;
+}
+
+.p-dropdown-trigger-icon {
+  color: #fff;
+}
+
+.p-inputtext:focus {
+  box-shadow: none;
+}
+
+.p-dropdown:not(.p-disabled).p-focus {
+  box-shadow: none;
+}
+
+.p-dropdown-panel {
+  background: var(--dark-background);
+  border-radius: 0;
+  border: 1px solid #fff;
+}
+
+.p-dropdown-items {
+  padding-block: 0;
+}
+
+.p-dropdown-item {
+  color: #fff;
+}
+
+.p-dropdown-item.p-highlight {
+  background: var(--dark-background);
+}
+
+.p-dropdown-item:not(.p-disabled) {
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.p-dropdown-item:not(.p-disabled):hover {
+  background: var(--button-red-dark);
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.p-carousel .p-carousel-indicator {
+  position: relative;
+  left: 5px;
+}
+
+.p-carousel .p-carousel-indicator .p-link {
+  background: var(--dark-background);
+  border: 1px solid var(--button-red);
+  border-radius: 0;
+}
+
+.p-carousel .p-carousel-indicator.p-highlight .p-link {
+  background: var(--button-red);
+  border-radius: 0;
+}
+
+.p-carousel .p-carousel-indicator .p-link:hover {
+  background: var(--button-red-light);
+}
+
+.p-carousel :is(.p-carousel-prev, .p-carousel-next).p-disabled {
+  visibility: hidden;
+}
+
+.p-carousel-next,
+.p-carousel-prev {
+  border-radius: 0;
+  color: #fff;
+}
+
+.p-carousel-next:hover,
+.p-carousel-prev:hover {
+  background: var(--button-red);
+}
+
+.p-inputswitch.p-focus .p-inputswitch-slider {
+  box-shadow: none;
+}
+
+.p-inputswitch-slider {
+  background: var(--dark-background);
+  border-radius: 0;
+  border: 1px solid var(--button-red);
+}
+
+.p-inputswitch-slider:hover {
+  background: var(--dark-background-light);
+}
+
+.p-inputswitch-slider:before {
+  background: var(--button-red);
+  border-radius: 0;
+  margin-left: -1px;
+}
+
+.p-inputswitch-slider:hover::before {
+  background: var(--button-red-light);
+}
+
+.p-dialog {
+  background-color: black;
+  border-radius: 2px;
+  border: 1px solid #fff;
+}
+
+.p-dialog-header,
+.p-dialog-content {
+  background: rgb(18, 18, 18);
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.p-dialog-header-close {
+  color: #fff;
+  border-radius: 0;
+  margin-left: 20px;
+  position: relative;
+  top: -2px;
+}
+
+.p-dialog-header-close:hover {
+  background-color: rgb(114, 16, 0);
+}
+
+.p-password-panel {
+  border-radius: 2px;
+  background-color: rgb(63, 63, 63);
+}
+
+.p-password-info {
+  color: white;
 }

@@ -1,9 +1,11 @@
 import { useAuthStore } from '@/stores/auth';
 import type { LoginDto } from '@/types';
 import { createTestingPinia } from '@pinia/testing';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import LoginForm from './LoginForm.vue';
+import Password from 'primevue/password';
+import PrimeVue from 'primevue/config';
 
 describe('LoginForm.vue', () => {
   it('has form inputs', () => {
@@ -25,13 +27,17 @@ describe('LoginForm.vue', () => {
     div.id = 'root';
     document.body.appendChild(div);
 
-    const wrapper = shallowMount(LoginForm, {
+    const wrapper = mount(LoginForm, {
       attachTo: '#root',
       global: {
+        components: {
+          Password
+      },
         plugins: [
           createTestingPinia({
             createSpy: vi.fn,
           }),
+          PrimeVue
         ],
       },
     });
@@ -45,9 +51,10 @@ describe('LoginForm.vue', () => {
 
     const usernameInput = wrapper.find('#username');
     await usernameInput.setValue(loginDto.username);
-    const passwordInput = wrapper.find('#password');
+    const passwordComponent = wrapper.find('#password');
+    const passwordInput = passwordComponent.find('input');
     await passwordInput.setValue(loginDto.password);
-
+   
     expect((usernameInput.element as HTMLInputElement).value).toBe(loginDto.username);
     expect((passwordInput.element as HTMLInputElement).value).toBe(loginDto.password);
 
@@ -62,13 +69,17 @@ describe('LoginForm.vue', () => {
     div.id = 'root';
     document.body.appendChild(div);
 
-    const wrapper = shallowMount(LoginForm, {
+    const wrapper = mount(LoginForm, {
       attachTo: '#root',
       global: {
+        components: {
+          Password
+        },
         plugins: [
           createTestingPinia({
             createSpy: vi.fn,
           }),
+          PrimeVue
         ],
       },
     });
@@ -83,7 +94,8 @@ describe('LoginForm.vue', () => {
     expect(wrapper.find('.login-error').exists()).toBe(true);
 
     await usernameInput.setValue('test_user');
-    const passwordInput = wrapper.find('#password');
+    const passwordComponent = wrapper.find('#password');
+    const passwordInput = passwordComponent.find('input');
     await passwordInput.setValue('');
     await wrapper.find('button').trigger('click');
 

@@ -14,7 +14,7 @@ export default mergeConfig(
           '**/*.d.ts',
           '**/.{eslint,mocha,prettier}rc.{?(c|m)js,yml}',
           'src/router/**',
-          'src/axios/**',
+          'src/config/**',
           'src/types/**',
           'src/main.ts',
         ],
@@ -28,6 +28,7 @@ export default mergeConfig(
           statements: 80,
         },
       },
+      setupFiles: ['./vitest.setup.ts'],
     },
   }),
 );
