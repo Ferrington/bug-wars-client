@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import Button from 'primevue/button';
+
+const STATIC_PREPEND = import.meta.env.MODE === 'production' ? '' : 'bug-wars-client/';
 </script>
 
 <template>
@@ -27,7 +29,7 @@ import Button from 'primevue/button';
         <a href="https://github.com/yuneKim" target="_blank"
           ><Button icon="pi pi-github" label="GitHub"
         /></a>
-        <a href="resumes/Yune_Kim_Resume.pdf" download
+        <a :href="STATIC_PREPEND + 'resumes/Yune_Kim_Resume.pdf'" download
           ><Button icon="pi pi-paperclip" label="Resume"
         /></a>
       </div>
